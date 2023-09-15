@@ -1,0 +1,97 @@
+instances:
+  nut:
+    long_name: nutrient
+    model: examples/npzd_nut
+    initialization:
+      c: 50.5                         # concentration (mmol m-3)
+  det:
+    long_name: detritus
+    model: examples/npzd_det
+    parameters:
+      w_d: -5.                    # vertical velocity (<0 for sinking) (m d-1), default = -5.0
+      kc: 0.03                       # specific light extinction (m2 mmol-1), default = 0.03
+      rdn: 0.003                     # remineralization rate (d-1), default = 0.003
+    initialization:
+      c: 5.5                         # concentration (mmol m-3)
+    coupling:
+      mineralisation_target: nut/c   # sink for remineralized matter (mmol m-3)
+  phy:
+    long_name: phytoplankton2
+    model: hereon/phy
+    parameters:
+      m0: 0.0225                     # background concentration (mmol m-3), default = 0.0225
+      rmn: 0.01                      # excretion rate (d-1), default = 0.01
+      rmd: 0.02                      # mortality (d-1), default = 0.02
+      rmax: 2.0225                 # maximum growth rate (d-1)
+      vmax: 1.5                  # maximum uptake rate (d-1)
+      #clight: 0.02
+      #alpha: 1.3
+    initialization:
+      c: 0.1                       # concentration (mmol m-3)
+      q: 0.5
+    coupling:
+      excretion_target: nut/c        # sink for excreted matter (mmol m-3)
+      mortality_target: det/c        # sink for dead matter (mmol m-3)
+      uptake_target: nut/c           # nutrient source (mmol m-3)
+  mixo:
+    use: true
+    long_name: mixotroph
+    model: hereon/mspec
+    parameters:
+      m0: 0.00225                     # background concentration (mmol m-3), default = 0.0225
+      rmn: 0.01                      # excretion rate (d-1), default = 0.01
+      rmd: 0.02                     # mortality (d-1), default = 0.02
+      rmax: .5                 # maximum growth rate (d-1)
+      ha: 1.
+      ia: false   # instantaneous acclimation (switch)
+      vmax: .8
+      rr: .10
+      alpha: 1.6
+      clight: 0.01
+      tau: 0.7
+    initialization:
+      c: 0.01                       # concentration (mmol m-3)
+      f: 0.5
+      q: 0.5
+    coupling:
+      grazing_target: phy/c          # prey source (mmol m-3)
+      grazing_target_nutrient: phy/q # prey nutrient content
+      excretion_target: nut/c        # sink for excreted matter (mmol m-3)
+      mortality_target: det/c        # sink for dead matter (mxmol m-3)
+      uptake_target: nut/c           # nutrient source (mmol m-3)
+  zoo:
+    use: true
+    long_name: zooplankton
+    model: hereon/zoo
+    parameters:
+      m0: 0.0225                     # background concentration (mmol m-3), default = 0.0225
+      rmax: 0.5                      # maximum specific grazing rate (d-1), default = 0.5
+      iv: .01                        # Ivlev grazing constant (m3 mmol-1), default = 1.1
+      rmn: 0.01                      # excretion rate (d-1), default = 0.01
+      rmd: 0.21                      # mortality (d-1), default = 0.02
+    initialization:
+      c: 1e-2                       # concentration (mmol m-3)
+      q: 0.5
+    coupling:
+      grazing_target: phy/c          # prey source (mmol m-3)
+      grazing_target_nutrient: phy/q # prey nutrient content
+      excretion_target: nut/c        # sink for excreted matter (mmol m-3)
+      mortality_target: det/c        # sink for dead matter (mmol m-3)
+  zoo2:
+    use: true
+    long_name: zooplankton2
+    model: hereon/zoo
+    parameters:
+      m0: 0.0225                     # background concentration (mmol m-3), default = 0.0225
+      rmax: 1.5                     # maximum specific grazing rate (d-1), default = 0.5
+      iv: 1.1                        # Ivlev grazing constant (m3 mmol-1), default = 1.1
+      rmn: 0.01                      # excretion rate (d-1), default = 0.01
+      rmd: 0.21                      # mortality (d-1), default = 0.02
+    initialization:
+      c: 1e-2                       # concentration (mmol m-3)
+      q: 0.5
+    coupling:
+      grazing_target: mixo/c          # prey source (mmol m-3)
+      grazing_target_nutrient: mixo/q # prey nutrient content
+      excretion_target: nut/c        # sink for excreted matter (mmol m-3)
+      mortality_target: det/c        # sink for dead matter (mmol m-3)

@@ -1,0 +1,20 @@
+#
+# Multiple blocks like the one below <filename> must be unique in case of 
+# multiple specifications.
+#
+# Except for time_unit, time_step and variables (including source) all other
+# specifications are optional.
+#
+output:
+   time_unit: day
+   time_step: 1
+   time_start: 2007-01-01 00:00:00
+   time_stop: 2007-12-31 00:00:00
+   #time_reference: yyyy-mm-dd hh:mi:ss
+   #sync_interval: <integer - <0 no syncing>
+   #k_start: <integer>
+   #k_stop: <integer>
+   #k_stride: <integer>
+   variables:
+      - source: * # <*=all registrated variables|specific list> # multiple 'source:' allowed
+        time_method: 2 #<0=time_method_none|1=time_method_instantaneous|2=time_method_mean|3=time_method_integrated - default=1>
